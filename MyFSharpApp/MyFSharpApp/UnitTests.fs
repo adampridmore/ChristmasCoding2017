@@ -2,7 +2,8 @@
 
 open MyModule
 open NUnit.Framework
+open FsUnit
 
 [<Test>]
-let helloWorldTest() =
-  Assert.AreEqual("Hello World 123", (helloWorld 123));
+let ``hello world test ``() =
+  helloWorld 123 |> should equal "Hello World 123"
