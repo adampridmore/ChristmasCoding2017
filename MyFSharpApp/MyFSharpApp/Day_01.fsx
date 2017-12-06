@@ -1,15 +1,23 @@
 ﻿
+let rowChecksum (x: string) =
+  let values = x.Split(' ') |> Seq.map (string >> int)
 
-let x = "1212"
+  (values |> Seq.max) - (values |> Seq.min)
 
-let values = x.ToCharArray() |> Seq.map (string >> int) |> Seq.toList
 
-let getOtherValue i =
-  (i + (values.Length/2)) % values.Length
-  
-values
-|> Seq.mapi (fun i v -> (i,v) ) 
-|> Seq.filter(fun (i, v) -> values.[i |> getOtherValue] = v)
-|> Seq.map snd
+let x = "5 1 9 5"
+
+
+let split (text:string) = 
+  let delimiters = [|",";"\n";System.Environment.NewLine|]
+  text.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries)
+
+let text = "5 1 9 5
+7 5 3
+2 4 6 8"
+
+text 
+|> split
+|> Seq.map rowChecksum
 |> Seq.sum
 
