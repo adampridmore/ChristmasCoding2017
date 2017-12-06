@@ -88,11 +88,12 @@ let ans =
     ) 
     initialState
 
-let xDiff = System.Math.Abs(ans.position.x - (arraySize /2))
-let yDiff = System.Math.Abs(ans.position.y - (arraySize / 2))
+let xDiff = System.Math.Abs(ans.position.x - (arraySize /2) ) - 1
+let yDiff = System.Math.Abs(ans.position.y - (arraySize / 2) ) - 1
+printfn "Ans is: %d" (xDiff+yDiff)
 
 
-ans
+//ans
 //
 //val it : State = {currentDirection = N;
 //                  spiralWidth = 602;
@@ -104,4 +105,4 @@ ans
 
 //board |> Seq.find(fun )
 
-printfn "It's 326"
+//printfn "It's 326"
