@@ -15,9 +15,9 @@ let makeSquareArray size =
 
 let arraySize = problemNumber |> calulateArraySize 
   
-let board = 
-  arraySize
-  |> makeSquareArray 
+//let board = 
+//  arraySize
+//  |> makeSquareArray 
 
 type Direction = N|W|S|E
 type Position = {
@@ -31,7 +31,7 @@ type State = {
   currentNumber: int
 }
 
-let drawOnBoard (state: State) = board.[state.position.x, state.position.y] <- state.currentNumber
+let drawOnBoard (board: int[,]) (state: State) = board.[state.position.x, state.position.y] <- state.currentNumber
 
 let walk (state:State) =
   match state.currentDirection with
@@ -49,14 +49,12 @@ let changeDirection (state:State) =
   | Direction.W -> {state with State.currentDirection = Direction.S; State.currentWalkDistance = 0}
   | Direction.S -> {state with State.currentDirection = Direction.E; State.currentWalkDistance = 0; State.spiralWidth = state.spiralWidth + 1}
 
-
-
 let applyDirection currentState = 
   if currentState.currentWalkDistance = currentState.spiralWidth - 1 then currentState |> changeDirection
   else currentState 
 
-let move (currentState:State) : (State) = 
-  drawOnBoard currentState // Mutate! Shhh
+let move board (currentState:State) : (State) = 
+  drawOnBoard board currentState // Mutate! Shhh
 
   currentState 
   |> applyDirection
@@ -67,30 +65,45 @@ let initialState = {
   currentDirection = Direction.E
   spiralWidth = 2
   currentWalkDistance = 0
-  position = {
-    x = arraySize / 2
-    y = arraySize / 2
-  }
+  position = {x = arraySize / 2; y = arraySize / 2 }
   currentNumber = 1
 } 
 
-initialState |> move |> move |> move|> move |> move |> move
-board
+//initialState |> move |> move |> move|> move |> move |> move
+//board
 
 //seq{1..15} 
 //|> Seq.fold (fun acc (nm,x) -> acc+x) 0 
 
-let ans = 
-  {0..problemNumber} 
-  |> Seq.fold (fun state _ -> 
-      let newState = (state |> move)
-      newState
-    ) 
-    initialState
+//let ans = 
+//  {0..problemNumber} 
+//  |> Seq.fold (fun state _ -> 
+//      let newState = (state |> move)
+//      newState
+//    ) 
+//    initialState
+//
+//let xDiff = System.Math.Abs(ans.position.x - (arraySize /2) ) - 1
+//let yDiff = System.Math.Abs(ans.position.y - (arraySize / 2) ) - 1
+//printfn "Ans is: %d" (xDiff+yDiff)
 
-let xDiff = System.Math.Abs(ans.position.x - (arraySize /2) ) - 1
-let yDiff = System.Math.Abs(ans.position.y - (arraySize / 2) ) - 1
+let board = 
+  arraySize
+  |> makeSquareArray 
+
+let last =
+  Seq.unfold (fun state -> 
+    let newState = state |> move board ; 
+    Some(newState, newState) 
+  ) initialState
+  //|> Seq.takeWhile (fun state -> state.currentNumber <= problemNumber)
+  |> Seq.take (problemNumber + 1)
+  |> Seq.last
+
+let xDiff = System.Math.Abs(last.position.x - (arraySize /2) ) - 1
+let yDiff = System.Math.Abs(last.position.y - (arraySize / 2) ) - 1
 printfn "Ans is: %d" (xDiff+yDiff)
+
 
 
 //ans
