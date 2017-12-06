@@ -56,7 +56,8 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="MyModule.fs" />
-    <Compile Include="Day_01.fs" />
+    <Compile Include="Day_01_pt1.fs" />
+    <Compile Include="Day_01_pt2.fs" />
     <Compile Include="Program.fs" />
     <None Include="Day_01.fsx" />
     <None Include="App.config" />
