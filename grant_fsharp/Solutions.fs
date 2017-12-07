@@ -9,7 +9,7 @@ let sumRepeats position (input:string)  =
     inputList
     |> List.zip (inputList |> shiftForward position)
     |> List.sumBy( fun (current, next) -> 
-        if current = next then current.ToString() |> int else 1)
+        if current = next then current.ToString() |> int else 0)
 
 let sumFollowingRepeats (input:string) = 
     input |> sumRepeats 1
