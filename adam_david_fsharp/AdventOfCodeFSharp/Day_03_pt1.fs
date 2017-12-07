@@ -60,7 +60,22 @@ let solver problemNumber =
     |> Seq.last
 
   System.Math.Abs(last.position.x) + System.Math.Abs(last.position.y)
+   
+[<Test>]
+let ``1``()=
+  1 |> solver |> should equal 0
 
+[<Test>]
+let ``12``()=
+  12 |> solver |> should equal 3
+
+[<Test>]
+let ``23``()=
+  23 |> solver |> should equal 2
+
+[<Test>]
+let ``1024``()=
+  1024 |> solver |> should equal 31
 
 [<Test>]
 let realTest() = 
