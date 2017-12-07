@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MyFSharpApp", "MyFSharpApp\MyFSharpApp.fsproj", "{CB9486CB-D588-4F21-83DF-05864061636D}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "AdventOfCodeFSharp", "AdventOfCodeFSharp\AdventOfCodeFSharp.fsproj", "{CB9486CB-D588-4F21-83DF-05864061636D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
