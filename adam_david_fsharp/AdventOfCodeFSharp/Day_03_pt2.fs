@@ -40,40 +40,77 @@ let move (currentState:State) : (State) =
   |> applyDirection
   |> walk
 
-let solver problemNumber = 
-  let initialState = {
+let calulateArraySize (v:int) =
+
+  let x = System.Math.Ceiling( System.Math.Sqrt (v |> double)) |> int
+
+  match x % 2 with
+  | 0 -> x + 1
+  | 1 -> x
+  | _ -> failwith "This should happen"
+  
+let makeSquareArray size = Array2D.zeroCreate<int> size size
+
+let problemNumber = 361527
+//let problemNumber = 20
+
+let arraySize = problemNumber |> calulateArraySize 
+
+let initialState = 
+  {
     currentDirection = Direction.E
     spiralWidth = 2
     currentWalkDistance = 0
     position = {x = 0; y = 0 }
     currentNumber = 1
-  } 
+  }
+  |> move
 
-  let last =
-    Seq.unfold (fun state -> 
-      let newState = state |> move 
-      Some(state, newState) // Return the 'previous' state so the first state is the initial state
-    ) initialState
-    |> Seq.takeWhile (fun state -> state.currentNumber <= problemNumber)
-    |> Seq.last
+let getCellTotal (x,y) (board:int[,]) =
+  seq{
+    for x in -1..1 do
+      for y in -1..1 do
+        yield (x,y)
+  }
+  |> Seq.map (fun (a,b) -> (a+x), (b+y))
+  |> Seq.filter (fun (x,y) -> (x >= 0) && (y >= 0) && (x <= board.GetUpperBound(0)) && (y <= board.GetUpperBound(1) ) ) 
+  |> Seq.map(fun (x,y) -> board.[x,y])
+  |> Seq.sum
 
-  System.Math.Abs(last.position.x) + System.Math.Abs(last.position.y)
+
+// https://stackoverflow.com/a/24967736/29521
+let takeUntil pred s =
+  let state = ref true
+  Seq.takeWhile (fun el ->
+    let ret= !state
+    state := not <| pred el
+    ret
+    ) s
+
+let solver problemNumber = 
+  let board =  arraySize |> makeSquareArray 
+  board.[arraySize/2,arraySize/2] <- 1
+
+  let mapToBoardCoors state =
+    let boardX = state.position.x + (arraySize/2)
+    let boardY = state.position.y + (arraySize/2)
+    (boardX, boardY)
+
+  Seq.unfold (fun state -> 
+    let newState = state |> move 
+    Some(state, newState) // Return the 'previous' state so the first state is the initial state
+  ) initialState
+  |> Seq.takeWhile (fun state -> state.currentNumber <= problemNumber)
+  |> Seq.map (fun state -> 
+      let boardCoords = state |> mapToBoardCoors
+      let cellTotal = getCellTotal  boardCoords board
+      board.[boardCoords |> fst, boardCoords |> snd] <- cellTotal
+      cellTotal)
+  |> Seq.find(fun cellTotal -> cellTotal > problemNumber)
    
 [<Test>]
-let ``1``()=
-  1 |> solver |> should equal 0
-
-[<Test>]
-let ``12``()=
-  12 |> solver |> should equal 3
-
-[<Test>]
-let ``23``()=
-  23 |> solver |> should equal 2
-
-[<Test>]
-let ``1024``()=
-  1024 |> solver |> should equal 31
+let ``20``()=
+  20 |> solver |> should equal 23
 
 [<Test>]
 let realTest() = 

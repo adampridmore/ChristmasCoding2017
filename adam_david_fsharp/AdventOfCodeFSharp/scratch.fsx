@@ -52,21 +52,21 @@ let takeUntil pred s =
     ret
     ) s
 
-let board =  arraySize |> makeSquareArray 
-board.[arraySize/2,arraySize/2] <- 1
+let solver problemNumber = 
+  let board =  arraySize |> makeSquareArray 
+  board.[arraySize/2,arraySize/2] <- 1
 
-Seq.unfold (fun state -> 
-  let newState = state |> move 
-  Some(state, newState) // Return the 'previous' state so the first state is the initial state
-) initialState
-|> Seq.takeWhile (fun state -> state.currentNumber <= problemNumber)
-|> Seq.map (fun state -> 
-    let boardX = state.position.x + (arraySize/2)
-    let boardY = state.position.y + (arraySize/2)
-    let cellTotal = getCellTotal boardX boardY board
-    board.[boardX, boardY] <- cellTotal
-    cellTotal)
-|> Seq.find(fun cellTotal -> cellTotal > problemNumber)
-//|> Seq.last
-|> printfn "Answer: %d"
-//board
+  Seq.unfold (fun state -> 
+    let newState = state |> move 
+    Some(state, newState) // Return the 'previous' state so the first state is the initial state
+  ) initialState
+  |> Seq.takeWhile (fun state -> state.currentNumber <= problemNumber)
+  |> Seq.map (fun state -> 
+      let boardX = state.position.x + (arraySize/2)
+      let boardY = state.position.y + (arraySize/2)
+      let cellTotal = getCellTotal boardX boardY board
+      board.[boardX, boardY] <- cellTotal
+      cellTotal)
+  |> Seq.find(fun cellTotal -> cellTotal > problemNumber)
+
+problemNumber |> solver |> printfn "Answer: %d"
