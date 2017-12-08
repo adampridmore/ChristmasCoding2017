@@ -1,16 +1,14 @@
-﻿#r @"..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll"
-#r @"..\packages\FsUnit.3.0.0\lib\net45\FsUnit.NUnit.dll"
-
-//#load "Day_03_pt2.fs"
+﻿module Day_04_pt1
 
 open FsUnit
+open NUnit.Framework
 
 let isValid (passphrase:string) = 
   (passphrase.Split(' '))
   |> Seq.groupBy(id)
   |> Seq.exists(fun (k,v) -> v |> Seq.length > 1)
   |> not
-
+  
 let input = "bdwdjjo avricm cjbmj ran lmfsom ivsof
 mxonybc fndyzzi gmdp gdfyoi inrvhr kpuueel wdpga vkq
 bneh ylltsc vhryov lsd hmruxy ebnh pdln vdprrky
@@ -529,8 +527,27 @@ let defaultDelimiters = [|",";"\n";System.Environment.NewLine|]
 let split (delimiters:string array) (text:string) = 
     text.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries)
 
+let solver input = 
+  input |> split defaultDelimiters
+  |> Seq.filter(fun p -> p |> isValid)
+  |> Seq.length
 
-input |> split defaultDelimiters
-|> Seq.filter(fun p -> p |> isValid)
-|> Seq.length
+[<Test>]
+let ``aa bb cc dd ee``()=
+  "aa bb cc dd ee"
+  |> isValid
+  |> should equal true
+
+[<Test>]
+let ``aa bb cc dd aa``()=
+  "aa bb cc dd aa"
+  |> isValid
+  |> should equal false
+  
+[<Test>]
+let realTest() = 
+  input
+  |> solver
+  |> (printfn "Ans is: %d")
+
 
