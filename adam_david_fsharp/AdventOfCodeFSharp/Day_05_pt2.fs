@@ -1,5 +1,4 @@
-﻿#r @"..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll"
-#r @"..\packages\FsUnit.3.0.0\lib\net45\FsUnit.NUnit.dll"
+﻿module Day_05_pt2
 
 //#load "Day_03_pt2.fs"
 

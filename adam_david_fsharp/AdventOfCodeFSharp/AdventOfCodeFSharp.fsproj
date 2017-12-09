@@ -65,6 +65,7 @@
     <Compile Include="Day_04_pt1.fs" />
     <Compile Include="Day_04_pt2.fs" />
     <Compile Include="Day_05_pt1.fs" />
+    <Compile Include="Day_05_pt2.fs" />
     <None Include="scratch.fsx" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
