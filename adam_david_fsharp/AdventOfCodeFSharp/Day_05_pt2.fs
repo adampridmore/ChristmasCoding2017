@@ -1073,6 +1073,7 @@ let ``simple``()=
   input1 |> solver |> should equal 10
 
 [<Test>]
+[<Ignore("Really slow!")>]
 let realTest()=
   input2 |> solver |> (printfn "Answer %d")
 
