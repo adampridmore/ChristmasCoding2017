@@ -1,22 +1,20 @@
-﻿#r @"..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll"
-#r @"..\packages\FsUnit.3.0.0\lib\net45\FsUnit.NUnit.dll"
-
-//#load "Day_03_pt2.fs"
+﻿module Day_05_pt1
 
 open FsUnit
+open NUnit.Framework
 
 let defaultDelimiters = [|",";"\n";System.Environment.NewLine|]
 
 let split (delimiters:string array) (text:string) = 
     text.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries)
 
-//let input = "0
-//3
-//0
-//1
-//-3"
+let input1 = "0
+3
+0
+1
+-3"
 
-let input = "1
+let input2 = "1
 2
 0
 0
@@ -1020,46 +1018,56 @@ let input = "1
 -216
 -477"
 
-let instructions = 
-  input
-  |> split defaultDelimiters
-  |> Seq.map int
-  |> Seq.toArray
-
 type GameState = {
   instructions : array<int>
   programCounter : int
   ended : bool
 }
 
-let initialState = {
-  instructions = instructions;
-  programCounter = 0;
-  ended = false
-}
+let solver input = 
+  let instructions = 
+    input
+    |> split defaultDelimiters
+    |> Seq.map int
+    |> Seq.toArray
 
-let nextState (state: GameState) =
-  let newInstructions = 
-    state.instructions 
-    |> Array.mapi(fun i v -> 
-      if i = state.programCounter 
-      then v + 1
-      else v
-  )
+
+  let initialState = {
+    instructions = instructions;
+    programCounter = 0;
+    ended = false
+  }
+
+  let nextState (state: GameState) =
+    let newInstructions = 
+      state.instructions 
+      |> Array.mapi(fun i v -> 
+        if i = state.programCounter 
+        then v + 1
+        else v
+    )
   
-  let move = (state.instructions |> Seq.tryItem (state.programCounter) )
-  match move with
-  | Some(move) -> 
-    {
-      instructions = newInstructions;
-      programCounter = state.programCounter + move
-      ended = false
-    }
-  | None -> {state with ended = true}
+    let move = (state.instructions |> Seq.tryItem (state.programCounter) )
+    match move with
+    | Some(move) -> 
+      {
+        instructions = newInstructions;
+        programCounter = state.programCounter + move
+        ended = false
+      }
+    | None -> {state with ended = true}
 
-Seq.unfold (fun state -> 
-  let a = state |> nextState; 
-  Some(a,a)) initialState
-|> Seq.takeWhile (fun state -> state.ended = false)
-|> Seq.length
-|> (printfn "Ans: %d")
+  Seq.unfold (fun state -> 
+    let a = state |> nextState; 
+    Some(a,a)) initialState
+  |> Seq.takeWhile (fun state -> state.ended = false)
+  |> Seq.length
+
+[<Test>]
+let ``simple``()=
+  input1 |> solver |> should equal 5
+
+[<Test>]
+let realTest()=
+  input2 |> solver |> (printfn "Answer %d")
+
