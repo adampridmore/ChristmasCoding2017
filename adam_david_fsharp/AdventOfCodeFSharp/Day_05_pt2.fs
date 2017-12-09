@@ -1,8 +1,7 @@
 ﻿module Day_05_pt2
 
-//#load "Day_03_pt2.fs"
-
 open FsUnit
+open NUnit.Framework
 
 let defaultDelimiters = [|",";"\n";System.Environment.NewLine|]
 
@@ -15,7 +14,7 @@ let input1 = "0
 1
 -3"
 
-let input = "1
+let input2 = "1
 2
 0
 0
@@ -1019,54 +1018,61 @@ let input = "1
 -216
 -477"
 
-let instructions = 
-  input
-  |> split defaultDelimiters
-  |> Seq.map int
-  |> Seq.toArray
-
 type GameState = {
   instructions : array<int>
   programCounter : int
   ended : bool
 }
 
-let initialState = {
-  instructions = instructions;
-  programCounter = 0;
-  ended = false
-}
+let solver input = 
+  let instructions = 
+    input
+    |> split defaultDelimiters
+    |> Seq.map int
+    |> Seq.toArray
 
-  
-let nextState (state: GameState) =
-  let move = (state.instructions |> Seq.tryItem (state.programCounter) )
+
+  let initialState = {
+    instructions = instructions;
+    programCounter = 0;
+    ended = false
+  }
+
+  let nextState (state: GameState) =
+    let move = (state.instructions |> Seq.tryItem (state.programCounter) )
    
-  match move with
-  | Some(move) ->
-    let instructionIncrement = 
-      match move with
-      | x when x >= 3 -> -1
-      | _ -> 1
+    match move with
+    | Some(move) ->
+      let instructionIncrement = 
+        match move with
+        | x when x >= 3 -> -1
+        | _ -> 1
   
-    let newInstructions = 
-      state.instructions 
-      |> Array.mapi(fun i v -> 
-        if i = state.programCounter 
-        then v + instructionIncrement
-        else v
-    )
-    {
-      instructions = newInstructions ;
-      programCounter = state.programCounter + move
-      ended = false
-    }
-  | None -> {state with ended = true}
+      let newInstructions = 
+        state.instructions 
+        |> Array.mapi(fun i v -> 
+          if i = state.programCounter 
+          then v + instructionIncrement
+          else v
+      )
+      {
+        instructions = newInstructions ;
+        programCounter = state.programCounter + move
+        ended = false
+      }
+    | None -> {state with ended = true}
 
-Seq.unfold (fun state -> 
-  let a = state |> nextState; 
-  Some(a,a)) initialState
-|> Seq.takeWhile (fun state -> state.ended = false)
-|> Seq.mapi (fun i state -> (if (i%10000=0) then printfn "- %4d %A" i state else ()) ; state)
-|> Seq.truncate 2000000000
-|> Seq.length
-//|> (printfn "Ans: %d")
+  Seq.unfold (fun state -> 
+    let a = state |> nextState; 
+    Some(a,a)) initialState
+  |> Seq.takeWhile (fun state -> state.ended = false)
+  |> Seq.length
+
+[<Test>]
+let ``simple``()=
+  input1 |> solver |> should equal 10
+
+[<Test>]
+let realTest()=
+  input2 |> solver |> (printfn "Answer %d")
+
